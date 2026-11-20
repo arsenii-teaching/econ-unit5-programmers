@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Does Higher Productivity Kill Jobs? — AP Micro Unit 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f4ec; --card:#fffdf8; --ink:#1c2230; --muted:#5d6475; --line:#ddd6c6;
+  --teal:#0f6e66; --teal-soft:#d9ece9; --orange:#c2470e; --orange-soft:#f8e2d5;
+  --blue:#2b4c9b; --gold:#b98a10; --good:#1d7a43; --bad:#b3261e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:18px;line-height:1.5}
+h1,h2,h3{font-family:"Source Serif 4",Georgia,serif;margin:0 0 .4em;line-height:1.15}
+h1{font-size:clamp(2rem,4.2vw,3.4rem)}
+h2{font-size:clamp(1.6rem,2.8vw,2.3rem)}
+h3{font-size:1.15rem}
+p{margin:.4em 0 .8em}
+.mono{font-family:"IBM Plex Mono",monospace}
+.deck{position:relative;min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:1rem;padding:.6rem 1.4rem;border-bottom:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+.topbar .unit{font-weight:600;color:var(--teal);letter-spacing:.04em;text-transform:uppercase}
+.progress{flex:1;height:5px;background:var(--line);border-radius:4px;overflow:hidden}
+.progress div{height:100%;background:var(--teal);width:0;transition:width .3s}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:1.6rem 1.4rem 5rem}
+.slide{display:none;width:100%;max-width:1150px;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin-bottom:.4rem}
+.lead{font-size:1.2rem;color:var(--muted);max-width:52em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem}
+.card.teal{background:var(--teal-soft);border-color:#b5d8d3}
+.card.orange{background:var(--orange-soft);border-color:#eec3aa}
+.formula{font-family:"Source Serif 4",serif;font-size:1.5rem;text-align:center;padding:.8rem;background:var(--card);border:1px dashed var(--teal);border-radius:10px;margin:.6rem 0}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:1rem 0}
+.chain span{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:.45rem .8rem;font-weight:500}
+.chain b{color:var(--teal);font-size:1.3rem}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:.55rem 1rem;font-weight:500}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:var(--teal);border:1.5px solid var(--teal)}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:.7rem 1rem;margin:.45rem 0;transition:.15s}
+.opt:hover{border-color:var(--teal)}
+.opt.chosen{border-color:var(--teal);background:var(--teal-soft)}
+.opt.right{border-color:var(--good);background:#dcf1e3}
+.opt.wrong{border-color:var(--bad);background:#f7dcd9}
+.opt:disabled{cursor:default}
+label.ctl{display:block;font-size:.9rem;font-weight:500;margin:.7rem 0 .2rem}
+label.ctl output{float:right;font-family:"IBM Plex Mono",monospace;color:var(--teal)}
+input[type=range]{width:100%;accent-color:var(--teal)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:.38rem .5rem;text-align:right;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+th:first-child,td:first-child{text-align:center}
+tr.hired td{background:var(--teal-soft)}
+tr.last td{background:#bfe0da;font-weight:600}
+.big{font-size:2rem;font-family:"Source Serif 4",serif;font-weight:700;color:var(--teal)}
+.stat{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.6rem}
+.stat div{flex:1;min-width:120px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem}
+.stat small{display:block;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.stat strong{font-family:"IBM Plex Mono",monospace;font-size:1.15rem}
+.up{color:var(--good)} .down{color:var(--bad)}
+.seg{display:inline-flex;border:1.5px solid var(--teal);border-radius:8px;overflow:hidden;margin:.3rem 0}
+.seg button{background:transparent;border:0;padding:.4rem .8rem;color:var(--teal);font-weight:500}
+.seg button.on{background:var(--teal);color:#fff}
+svg text{font-family:"IBM Plex Sans",sans-serif}
+.reveal{display:none;margin-top:.6rem}
+.reveal.show{display:block;animation:fade .3s}
+.timeline{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.timeline button{flex:1;min-width:120px;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:.6rem;font-weight:600}
+.timeline button small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
+.timeline button.on{border-color:var(--teal);background:var(--teal-soft)}
+.feedback{padding:.7rem 1rem;border-radius:10px;margin-top:.5rem;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#dcf1e3}
+.feedback.no{background:#f7dcd9}
+ul.tight{margin:.3rem 0;padding-left:1.2rem} ul.tight li{margin:.25rem 0}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:1rem;padding:.7rem;background:linear-gradient(transparent,var(--bg) 35%)}
+.nav button{background:var(--card);border:1.5px solid var(--line);border-radius:50%;width:44px;height:44px;font-size:1.2rem;color:var(--ink)}
+.nav button:hover{border-color:var(--teal)}
+.nav .count{font-family:"IBM Plex Mono",monospace;font-size:.85rem;color:var(--muted);min-width:4em;text-align:center}
+.src{font-size:.78rem;color:var(--muted);margin-top:.6rem}
+.src a{color:var(--muted)}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;padding:.1rem .5rem;border-radius:20px;background:var(--orange-soft);color:var(--orange);text-transform:uppercase;letter-spacing:.04em}
+.pill-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.qnum{font-family:"IBM Plex Mono",monospace;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="topbar">
+    <span class="unit">AP Micro · Unit 5 · Factor Markets</span>
+    <div class="progress"><div id="prog"></div></div>
+    <span>← → keys to navigate</span>
+  </div>
+  <main id="slides">
+
+  <!-- 1 HOOK -->
+  <section class="slide" data-title="hook">
+    <div class="kicker">Warm-up</div>
+    <h1>AI coding tools let one programmer do the work of two.</h1>
+    <p class="lead">So what happens to the number of programmers employed? Make your prediction. We'll come back to it at the end.</p>
+    <div style="max-width:620px" id="poll">
+      <button class="opt" data-v="0">A. It falls by about half, since we need half as many</button>
+      <button class="opt" data-v="1">B. It falls somewhat</button>
+      <button class="opt" data-v="2">C. It stays about the same</button>
+      <button class="opt" data-v="3">D. It rises</button>
+      <button class="opt" data-v="4">E. It depends</button>
+    </div>
+    <p id="pollmsg" class="src" style="font-size:.95rem"></p>
+  </section>
+
+  <!-- 2 DERIVED DEMAND -->
+  <section class="slide">
+    <div class="kicker">Big idea #1</div>
+    <h2>Labor demand is a <em>derived demand</em></h2>
+    <div class="grid2">
+      <div>
+        <p class="lead">Nobody wants programmers for their own sake. Firms hire programmers because <strong>consumers want software</strong>.</p>
+        <p>The demand for any factor of production (labor, capital, land) is <em>derived from</em> the demand for the good or service it produces.</p>
+        <div class="card teal">
+          <h3>So the real question is:</h3>
+          <p style="margin:0">When programmers become more productive, what happens to the <strong>market for software</strong>? Labor follows from that.</p>
+        </div>
+      </div>
+      <svg viewBox="0 0 420 260" width="100%" aria-label="Consumers demand software, which drives firms to demand programmers">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0f6e66"/></marker></defs>
+        <rect x="10" y="20" width="120" height="70" rx="10" fill="#fffdf8" stroke="#ddd6c6"/>
+        <text x="70" y="50" text-anchor="middle" font-weight="600">Consumers</text><text x="70" y="72" text-anchor="middle" font-size="13" fill="#5d6475">want apps</text>
+        <rect x="150" y="20" width="120" height="70" rx="10" fill="#fffdf8" stroke="#ddd6c6"/>
+        <text x="210" y="50" text-anchor="middle" font-weight="600">Software firms</text><text x="210" y="72" text-anchor="middle" font-size="13" fill="#5d6475">sell apps</text>
+        <rect x="290" y="20" width="120" height="70" rx="10" fill="#d9ece9" stroke="#b5d8d3"/>
+        <text x="350" y="50" text-anchor="middle" font-weight="600">Programmers</text><text x="350" y="72" text-anchor="middle" font-size="13" fill="#5d6475">get hired</text>
+        <line x1="130" y1="55" x2="148" y2="55" stroke="#0f6e66" stroke-width="2.5" marker-end="url(#ar)"/>
+        <line x1="270" y1="55" x2="288" y2="55" stroke="#0f6e66" stroke-width="2.5" marker-end="url(#ar)"/>
+        <text x="70" y="130" text-anchor="middle" font-size="13" fill="#c2470e" font-weight="600">Product market</text>
+        <text x="350" y="130" text-anchor="middle" font-size="13" fill="#c2470e" font-weight="600">Factor (labor) market</text>
+        <path d="M70 140 Q210 240 350 140" fill="none" stroke="#c2470e" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+        <text x="210" y="215" text-anchor="middle" font-size="14" font-style="italic">demand flows from product → factor</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 3 FORMULAS -->
+  <section class="slide">
+    <div class="kicker">Toolkit</div>
+    <h2>Three formulas you need</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>Marginal Product (MP)</h3>
+        <p>Extra output from hiring one more worker.</p>
+        <div class="formula">MP = ΔTP / ΔL</div>
+        <p class="src">Falls as more workers are added (diminishing marginal returns).</p>
+      </div>
+      <div class="card">
+        <h3>Marginal Revenue Product (MRP)</h3>
+        <p>Extra <em>revenue</em> from hiring one more worker.</p>
+        <div class="formula">MRP = MP × P</div>
+        <p class="src">This holds when the firm sells in a perfectly competitive product market (P = MR). <strong>The MRP curve is the firm's labor demand curve.</strong></p>
+      </div>
+      <div class="card">
+        <h3>Marginal Resource Cost (MRC)</h3>
+        <p>Extra <em>cost</em> of hiring one more worker.</p>
+        <div class="formula">MRC = W</div>
+        <p class="src">This holds in a perfectly competitive labor market, where the firm is a wage-taker.</p>
+      </div>
+    </div>
+    <div class="card teal" style="margin-top:1rem;text-align:center">
+      <h3 style="margin:0">Profit-maximizing hiring rule: keep hiring until <span class="mono">MRP = MRC</span></h3>
+    </div>
+  </section>
+
+  <!-- 4 MRP TABLE -->
+  <section class="slide">
+    <div class="kicker">Interactive · One firm</div>
+    <h2>CodeCo's hiring decision</h2>
+    <div class="grid2">
+      <div>
+        <p>CodeCo sells software features in a competitive market and hires programmers at the market wage. Move the sliders and watch how many programmers it hires.</p>
+        <label class="ctl">Productivity (AI tools) <output id="mMul">1.0×</output></label>
+        <input type="range" id="mSlide" min="1" max="2" step="0.1" value="1">
+        <label class="ctl">Price per feature (P) <output id="mP">$1,000</output></label>
+        <input type="range" id="pSlide" min="400" max="1500" step="50" value="1000">
+        <label class="ctl">Market wage per month (W = MRC) <output id="mW">$5,000</output></label>
+        <input type="range" id="wSlide" min="2000" max="9000" step="500" value="5000">
+        <div class="stat">
+          <div><small>Programmers hired</small><strong id="hireN">6</strong></div>
+          <div><small>Features produced</small><strong id="tpN">45</strong></div>
+        </div>
+        <div class="card orange" style="margin-top:.8rem;font-size:.92rem">
+          <strong>Try this:</strong> set productivity to 2.0×. Hiring rises. Then lower the price to $500. Hiring goes right back to 6. <em>The price of the output matters as much as productivity.</em>
+        </div>
+      </div>
+      <div class="card" style="padding:.6rem">
+        <table>
+          <thead><tr><th>L</th><th>TP</th><th>MP</th><th>MRP = MP×P</th><th>MRC = W</th></tr></thead>
+          <tbody id="mrpBody"></tbody>
+        </table>
+        <p class="src">Shaded rows are hired: hire every worker with MRP ≥ W.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 NAIVE VIEW -->
+  <section class="slide">
+    <div class="kicker">The trap</div>
+    <h2>The "fixed amount of work" mistake</h2>
+    <div class="grid2">
+      <div>
+        <p class="lead">The naive argument goes like this:</p>
+        <div class="card">
+          <p>"CodeCo makes 45 features with 6 programmers. With AI, 3 programmers make 54 features. So CodeCo will fire half its staff."</p>
+        </div>
+        <p style="margin-top:1rem">The hidden assumption is that <strong>the amount of software the world wants is fixed</strong>. Economists call this the <em>lump-of-labor fallacy</em>.</p>
+        <button class="btn" id="naiveBtn">But what does a profit-maximizer actually do?</button>
+        <div class="reveal" id="naiveAns">
+          <div class="card teal">
+            <p style="margin:0">At 2× productivity (P = $1,000, W = $5,000), every programmer's MRP doubles. The 7th and 8th programmers now bring in <strong>$8,000 and $6,000</strong>, more than the $5,000 they cost. CodeCo hires <strong>8</strong>, not 3, and produces 104 features. <em>If the price holds</em>, that is.</p>
+          </div>
+        </div>
+      </div>
+      <svg viewBox="0 0 420 280" width="100%" aria-label="Bar comparison: 6 programmers make 45 features; 3 AI-assisted programmers make 54">
+        <text x="210" y="22" text-anchor="middle" font-weight="600">Output if the firm only wants ~45 features</text>
+        <g id="naiveBars"></g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 6 EFFECT 1 -->
+  <section class="slide">
+    <div class="kicker">Force #1 · pushes employment UP</div>
+    <h2>Higher productivity raises MRP</h2>
+    <div class="chain"><span>AI tool</span><b>→</b><span>MP ↑</span><b>→</b><span>MRP = MP × P ↑</span><b>→</b><span>D<sub>L</sub> shifts right</span><b>→</b><span>W ↑ and L ↑</span></div>
+    <div class="grid2">
+      <div>
+        <p>Every programmer now adds more output per hour, so each one is worth more to the firm. At any given wage, firms want <strong>more</strong> programmers, not fewer.</p>
+        <div class="card teal">
+          <h3><span class="tag">AP exam tip</span></h3>
+          <p style="margin:0">Unless the question says the product price changes, the standard AP answer is: <strong>productivity ↑ → MP ↑ → MRP ↑ → labor demand shifts right.</strong> Productivity is one of the shifters of labor demand.</p>
+        </div>
+      </div>
+      <svg viewBox="0 0 400 300" width="100%" id="shiftSvg" aria-label="Labor demand curve shifts right from D1 to D2"></svg>
+    </div>
+  </section>
+
+  <!-- 7 EFFECT 2 -->
+  <section class="slide">
+    <div class="kicker">Force #2 · can push employment DOWN</div>
+    <h2>But cheaper production lowers the price of software</h2>
+    <div class="chain"><span>Productivity ↑</span><b>→</b><span>cost per feature ↓</span><b>→</b><span>supply of software shifts right</span><b>→</b><span>P ↓, Q ↑</span></div>
+    <div class="grid2">
+      <div>
+        <p>When <em>every</em> firm adopts the tool, the supply of software increases and the market price falls. Since <span class="mono">MRP = MP × P</span>, a falling P pulls MRP back down.</p>
+        <p>The question that decides the outcome:</p>
+        <div class="card orange">
+          <h3 style="margin:0">When software gets cheaper, how much <em>more</em> of it do people buy?</h3>
+        </div>
+        <p style="margin-top:.8rem">That's the <strong>price elasticity of demand for software</strong>, a Unit 2 idea that comes back in Unit 5.</p>
+      </div>
+      <svg viewBox="0 0 400 300" width="100%" id="prodSvg" aria-label="Software market: supply shifts right, price falls, quantity rises"></svg>
+    </div>
+  </section>
+
+  <!-- 8 LABOR MARKET SIM -->
+  <section class="slide">
+    <div class="kicker">Interactive · Whole market</div>
+    <h2>Put both forces together</h2>
+    <div class="grid2" style="gap:1rem 2rem">
+      <div>
+        <label class="ctl" style="margin-top:0">Productivity gain from AI <output id="gOut">+50%</output></label>
+        <input type="range" id="gSlide" min="0" max="100" step="5" value="50">
+      </div>
+      <div>
+        <label class="ctl" style="margin-top:0">Price elasticity of demand for software |E<sub>d</sub>| <output id="eOut">2.0</output></label>
+        <input type="range" id="eSlide" min="0.2" max="3" step="0.1" value="2">
+        <div class="seg" id="eSeg" style="margin:.1rem 0 0">
+          <button data-e="0.4">Inelastic</button><button data-e="1">Unit elastic</button><button data-e="2" class="on">Elastic</button>
+        </div>
+      </div>
+    </div>
+    <div class="card teal" style="margin-top:.6rem;padding:.6rem 1rem;font-size:.95rem" id="simMsg"></div>
+    <div class="grid2" style="margin-top:.6rem;gap:1rem">
+      <div class="card" style="padding:.7rem .8rem">
+        <h3 style="margin-bottom:.1rem"><span class="tag">Step 1</span> Market for software</h3>
+        <p class="src" style="margin:0">Cost ↓ shifts supply down. <strong>Elasticity sets how far Q jumps.</strong></p>
+        <svg viewBox="0 0 460 245" width="100%" id="softSvg" aria-label="Market for software"></svg>
+        <p class="mono" style="margin:0;font-size:.95rem;text-align:center">Price <span id="rP"></span> · Quantity demanded <span id="rQ"></span></p>
+      </div>
+      <div class="card" style="padding:.7rem .8rem">
+        <h3 style="margin-bottom:.1rem"><span class="tag">Step 2</span> Market for programmers</h3>
+        <p class="src" style="margin:0">Programmers needed = software output ÷ output per programmer.</p>
+        <svg viewBox="0 0 460 245" width="100%" id="labSvg" aria-label="Market for programmers"></svg>
+        <p class="mono" style="margin:0;font-size:.95rem;text-align:center">Wage <span id="rW"></span> · Employment <span id="rL"></span></p>
+      </div>
+    </div>
+    <p class="src">Simplified model: software is produced at constant cost, so its price falls by the same proportion that cost per unit falls.</p>
+  </section>
+
+  <!-- 9 ELASTICITY HINGE -->
+  <section class="slide">
+    <div class="kicker">The hinge</div>
+    <h2>Elasticity decides who wins</h2>
+    <p class="lead">Here's a handy identity: <strong>programmers needed = software output ÷ output per programmer</strong>. So employment rises only if output grows <em>faster</em> than productivity.</p>
+    <div class="formula" style="max-width:640px;margin:1rem auto">%Δ programmers ≈ %Δ software output − %Δ productivity</div>
+    <p style="text-align:center;color:var(--muted)">Example: productivity +50%, so the software price falls about 33%.</p>
+    <div class="grid3">
+      <div class="card">
+        <span class="tag">Inelastic · |E<sub>d</sub>| = 0.5</span>
+        <p>Output rises only <strong>+22%</strong>. People don't want much more software, even when it's cheaper.</p>
+        <div class="big down">−18%</div><p class="src">programmers</p>
+      </div>
+      <div class="card">
+        <span class="tag">Unit elastic · |E<sub>d</sub>| = 1</span>
+        <p>Output rises <strong>+50%</strong>, exactly matching the productivity gain.</p>
+        <div class="big">0%</div><p class="src">programmers</p>
+      </div>
+      <div class="card teal">
+        <span class="tag">Elastic · |E<sub>d</sub>| = 2</span>
+        <p>Output rises <strong>+125%</strong>. Cheaper software unlocks new apps, new users, and new uses.</p>
+        <div class="big up">+50%</div><p class="src">programmers</p>
+      </div>
+    </div>
+    <p style="margin-top:1rem"><strong>Why software demand tends to be elastic:</strong> when building software gets cheaper, projects that weren't worth doing before become profitable. Think of small businesses getting custom apps, hospitals automating paperwork, and farms using sensor software.</p>
+  </section>
+
+  <!-- 10 COMPLEMENTS / SUBSTITUTES + DATA -->
+  <section class="slide">
+    <div class="kicker">Another labor-demand shifter</div>
+    <h2>Complement or substitute?</h2>
+    <div class="grid2">
+      <div>
+        <p>AI tools are another <em>input</em>. Their effect depends on how they relate to a given worker:</p>
+        <div class="card teal" style="margin-bottom:.6rem"><h3>Complement in production</h3><p style="margin:0">The AI makes the worker more productive (it raises MP). Cheaper AI → <strong>D<sub>L</sub> shifts right</strong>. Example: a developer who designs systems and uses AI to write routine code faster.</p></div>
+        <div class="card orange"><h3>Substitute in production</h3><p style="margin:0">The AI does the worker's task instead. Cheaper AI → <strong>D<sub>L</sub> shifts left</strong> (unless the output effect is big). Example: routine code written to someone else's spec.</p></div>
+        <p style="margin-top:.8rem">The same technology can be a complement for one job and a substitute for another. <strong>Both</strong> effects show up in the official projections →</p>
+      </div>
+      <div class="card">
+        <h3>Projected U.S. employment change, 2024–2034</h3>
+        <svg viewBox="0 0 440 250" width="100%" id="blsSvg" aria-label="BLS projections bar chart"></svg>
+        <p class="src">Software developers, QA analysts &amp; testers: 1,895,500 jobs in 2024, projected +15%. Computer programmers: 121,200 jobs, projected −6%. BLS expects some higher-skilled programming tasks to shift to software developers.<br>Source: <a href="https://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm" target="_blank" rel="noopener">BLS Occupational Outlook Handbook</a>, <a href="https://www.bls.gov/ooh/computer-and-information-technology/computer-programmers.htm" target="_blank" rel="noopener">computer programmers</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 HISTORY -->
+  <section class="slide">
+    <div class="kicker">Evidence from history</div>
+    <h2>Programmers have been "automated" many times before</h2>
+    <p>Click each era.</p>
+    <div class="timeline" id="tl">
+      <button data-i="0">1940s–50s<small>Machine code</small></button>
+      <button data-i="1">1957<small>FORTRAN compiler</small></button>
+      <button data-i="2">1970s–80s<small>C &amp; the PC</small></button>
+      <button data-i="3">1990s–2000s<small>Web &amp; open source</small></button>
+      <button data-i="4">2010s<small>Cloud &amp; app stores</small></button>
+      <button data-i="5">2020s<small>AI assistants</small></button>
+    </div>
+    <div class="card" id="tlCard" style="min-height:150px"></div>
+    <div class="card teal" style="margin-top:1rem">
+      <p style="margin:0"><strong>The pattern:</strong> each wave made one programmer far more productive, and employment grew from a few thousand specialists to about <strong>1.9 million</strong> U.S. software developers in 2024. Cheaper software kept finding new uses, so demand behaved as if it were elastic.</p>
+    </div>
+  </section>
+
+  <!-- 12 FRQ -->
+  <section class="slide">
+    <div class="kicker">AP practice · FRQ style</div>
+    <h2>Practice: SoftCo</h2>
+    <p>SoftCo is a profit-maximizing firm that sells apps in a perfectly competitive product market and hires programmers in a perfectly competitive labor market.</p>
+    <div class="grid2">
+      <div>
+        <div class="card" style="margin-bottom:.5rem">
+          <p><span class="qnum">(a)</span> State the rule SoftCo uses to decide how many programmers to hire.</p>
+          <button class="btn ghost" data-rev="fa">Reveal</button>
+          <div class="reveal" id="fa"><p>Hire until <strong>MRP = MRC</strong>, where MRC = the market wage (because SoftCo is a wage-taker).</p></div>
+        </div>
+        <div class="card" style="margin-bottom:.5rem">
+          <p><span class="qnum">(b)</span> Only SoftCo adopts a new AI tool that raises programmers' MP. The app price doesn't change. What happens to SoftCo's MRP curve, the market wage, and the number of programmers SoftCo hires?</p>
+          <button class="btn ghost" data-rev="fb">Reveal</button>
+          <div class="reveal" id="fb"><p>MRP shifts <strong>right</strong>. The market wage is <strong>unchanged</strong> because one firm is too small to affect it. SoftCo hires <strong>more</strong> programmers. (See firm graph →)</p></div>
+        </div>
+        <div class="card" style="margin-bottom:.5rem">
+          <p><span class="qnum">(c)</span> Now <em>all</em> firms adopt the tool and the price of apps stays constant. Show the effect on the market for programmers.</p>
+          <button class="btn ghost" data-rev="fc">Reveal</button>
+          <div class="reveal" id="fc"><p>Market D<sub>L</sub> shifts <strong>right</strong>. The equilibrium wage and the quantity of programmers employed both <strong>increase</strong>. (See market graph →)</p></div>
+        </div>
+        <div class="card">
+          <p><span class="qnum">(d)</span> Suppose instead that the price of apps falls sharply, and demand for apps is highly price <em>inelastic</em>. Explain how your answer to (c) could change.</p>
+          <button class="btn ghost" data-rev="fd">Reveal</button>
+          <div class="reveal" id="fd"><p>Because MRP = MP × P, a large fall in P can offset the rise in MP. With inelastic demand, quantity of apps rises by a smaller % than productivity, so fewer programmers are needed. D<sub>L</sub> could shift <strong>left</strong>, lowering the wage and employment.</p></div>
+        </div>
+      </div>
+      <div class="card" style="padding:.5rem;position:sticky;top:1rem">
+        <svg viewBox="0 0 490 270" width="100%" id="frqSvg" aria-label="Side-by-side market and firm graphs"></svg>
+        <p class="src" style="text-align:center">Left: market for programmers (part c). Right: SoftCo (part b). Revealing an answer draws its shift.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 QUIZ -->
+  <section class="slide">
+    <div class="kicker">Quick check</div>
+    <h2>Five-question check</h2>
+    <div class="grid2">
+      <div id="quizBox" class="card"></div>
+      <div>
+        <div class="card"><h3>Score</h3><div class="big" id="qScore">0 / 0</div><p class="src">Answer each question, then click Next.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 SUMMARY -->
+  <section class="slide">
+    <div class="kicker">Wrap-up</div>
+    <h2>So… does higher productivity kill programming jobs?</h2>
+    <div class="grid2">
+      <div>
+        <div class="card teal">
+          <h3>It depends, and now you can say on what:</h3>
+          <ul class="tight">
+            <li><strong>MRP = MP × P.</strong> Higher MP pushes labor demand right.</li>
+            <li>If all firms become more productive, <strong>P falls</strong> and pulls MRP back.</li>
+            <li><strong>Elastic</strong> demand for the product means employment rises. <strong>Inelastic</strong> demand means it can fall.</li>
+            <li>Tech that <strong>complements</strong> a worker raises their labor demand. Tech that <strong>substitutes</strong> for them lowers it.</li>
+            <li>History and the BLS data show both effects. Software developers grow while routine "programmer" jobs shrink.</li>
+          </ul>
+        </div>
+        <p id="pollBack" style="margin-top:.8rem"></p>
+      </div>
+      <div class="card orange">
+        <h3>Common AP mistakes</h3>
+        <ul class="tight">
+          <li>A change in the <strong>wage</strong> causes a <em>movement along</em> D<sub>L</sub>, not a shift.</li>
+          <li>A change in <strong>productivity</strong> or <strong>product price</strong> <em>shifts</em> D<sub>L</sub>.</li>
+          <li>Forgetting MRP = MP × P. Both parts matter.</li>
+          <li>Writing MRC = W in a <em>monopsony</em>. That's true only for a wage-taking firm.</li>
+          <li>Labeling the firm's labor demand curve "D" instead of <strong>MRP</strong>, or the wage line "W" without <strong>MRC</strong>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  </main>
+  <div class="nav">
+    <button id="prev" aria-label="Previous slide">‹</button>
+    <span class="count" id="count">1 / 14</span>
+    <button id="next" aria-label="Next slide">›</button>
+  </div>
+</div>
+
+<script>
+(function(){
+const NS="http://www.w3.org/2000/svg";
+const C={teal:"#0f6e66",orange:"#c2470e",ink:"#1c2230",muted:"#5d6475",line:"#ddd6c6",blue:"#2b4c9b",bad:"#b3261e",good:"#1d7a43"};
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
+const pct=x=>(x>=0?"+":"")+Math.round(x*100)+"%";
+
+/* ---------- navigation ---------- */
+const slides=[...document.querySelectorAll(".slide")];
+let cur=0;
+function show(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,j)=>s.classList.toggle("active",j===cur));
+  document.getElementById("count").textContent=(cur+1)+" / "+slides.length;
+  document.getElementById("prog").style.width=((cur+1)/slides.length*100)+"%";
+  const h="#slide-"+(cur+1); if(location.hash!==h) history.replaceState(null,"",h);
+  if(cur===slides.length-1) pollRecap();
+  window.scrollTo(0,0);
+}
+document.getElementById("prev").onclick=()=>show(cur-1);
+document.getElementById("next").onclick=()=>show(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT")return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){show(cur+1);e.preventDefault();}
+  if(e.key==="ArrowLeft"||e.key==="PageUp"){show(cur-1);e.preventDefault();}
+});
+function fromHash(){const m=location.hash.match(/^#slide-(\d+)$/);show(m?+m[1]-1:0);}
+window.addEventListener("hashchange",fromHash);
+
+/* ---------- poll ---------- */
+let pollChoice=null;
+const pollText=["falls by about half","falls somewhat","stays the same","rises","it depends"];
+document.querySelectorAll("#poll .opt").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#poll .opt").forEach(x=>x.classList.remove("chosen"));
+  b.classList.add("chosen");pollChoice=+b.dataset.v;
+  document.getElementById("pollmsg").textContent="Prediction locked in. Use → to start.";
+});
+function pollRecap(){
+  const p=document.getElementById("pollBack");
+  if(pollChoice===null){p.innerHTML="<strong>Back to the warm-up:</strong> the best answer is <strong>E, it depends</strong>, on the elasticity of demand for software and on whether AI complements or substitutes for the worker. In the past, demand has usually been elastic enough that employment rose.";return;}
+  p.innerHTML="<strong>Your prediction:</strong> it "+pollText[pollChoice]+". "+(pollChoice===4?"Nice. That's the best answer.":"The best answer is <strong>E, it depends</strong>.")+" It turns on the elasticity of demand for software and on whether AI complements or substitutes for the worker. In the past, demand has usually been elastic enough that employment rose.";
+}
+
+/* ---------- MRP table ---------- */
+const baseMP=[10,9,8,7,6,5,4,3];
+const mS=document.getElementById("mSlide"),pS=document.getElementById("pSlide"),wS=document.getElementById("wSlide");
+function mrp(){
+  const m=+mS.value,P=+pS.value,W=+wS.value;
+  document.getElementById("mMul").textContent=m.toFixed(1)+"×";
+  document.getElementById("mP").textContent=fmt$(P);
+  document.getElementById("mW").textContent=fmt$(W);
+  let tp=0,hire=0,tpH=0,rows="";
+  const mps=baseMP.map(x=>x*m);
+  mps.forEach((mp,i)=>{if(mp*P>=W-1e-6&&hire===i){hire=i+1;}});
+  mps.forEach((mp,i)=>{
+    tp+=mp; if(i<hire)tpH=tp;
+    const cls=i<hire?(i===hire-1?"last":"hired"):"";
+    rows+=`<tr class="${cls}"><td>${i+1}</td><td>${+tp.toFixed(1)}</td><td>${+mp.toFixed(1)}</td><td>${fmt$(mp*P)}</td><td>${fmt$(W)}</td></tr>`;
+  });
+  document.getElementById("mrpBody").innerHTML=rows;
+  document.getElementById("hireN").textContent=hire;
+  document.getElementById("tpN").textContent=+tpH.toFixed(1);
+}
+[mS,pS,wS].forEach(s=>s.oninput=mrp);mrp();
+
+/* ---------- naive bars ---------- */
+(function(){
+  const g=document.getElementById("naiveBars");
+  const data=[{lab:"Before: 6 programmers",v:45,c:C.muted},{lab:"With AI: 3 programmers",v:54,c:C.orange}];
+  data.forEach((d,i)=>{
+    const y=60+i*95,w=d.v*5.5;
+    el("text",{x:20,y:y-8,"font-size":14,fill:C.ink},g,d.lab);
+    el("rect",{x:20,y:y,width:w,height:44,rx:6,fill:d.c},g);
+    el("text",{x:28+w,y:y+28,"font-size":15,"font-weight":600,fill:C.ink},g,d.v+" features");
+  });
+  el("text",{x:210,y:265,"text-anchor":"middle","font-size":13,fill:C.muted,"font-style":"italic"},g,"Half the workers, more output. But is 45 the right target?");
+})();
+document.getElementById("naiveBtn").onclick=()=>document.getElementById("naiveAns").classList.add("show");
+
+/* ---------- generic axes ---------- */
+function axes(svg,x0,y0,w,h,xl,yl){
+  el("line",{x1:x0,y1:y0,x2:x0,y2:y0-h,stroke:C.ink,"stroke-width":2},svg);
+  el("line",{x1:x0,y1:y0,x2:x0+w,y2:y0,stroke:C.ink,"stroke-width":2},svg);
+  el("text",{x:x0-8,y:y0-h-6,"font-size":14,"font-weight":600,"text-anchor":"middle"},svg,yl);
+  el("text",{x:x0+w,y:y0+22,"font-size":14,"font-weight":600,"text-anchor":"end"},svg,xl);
+}
+function line(svg,x1,y1,x2,y2,col,lab,dash,lx,ly){
+  el("line",{x1,y1,x2,y2,stroke:col,"stroke-width":2.6,"stroke-dasharray":dash||""},svg);
+  if(lab) el("text",{x:lx!=null?lx:x2+4,y:ly!=null?ly:y2,"font-size":14,"font-weight":600,fill:col},svg,lab);
+}
+function dashTo(svg,x,y,x0,y0,labX,labY){
+  el("line",{x1:x0,y1:y,x2:x,y2:y,stroke:C.muted,"stroke-dasharray":"4 4"},svg);
+  el("line",{x1:x,y1:y,x2:x,y2:y0,stroke:C.muted,"stroke-dasharray":"4 4"},svg);
+  if(labY) el("text",{x:x0-6,y:y+5,"font-size":13,"text-anchor":"end"},svg,labY);
+  if(labX) el("text",{x:x,y:y0+18,"font-size":13,"text-anchor":"middle"},svg,labX);
+}
+function arrow(svg,x1,y1,x2,y2,col){
+  const id="a"+Math.random().toString(36).slice(2,7);
+  const d=el("defs",{},svg);const m=el("marker",{id,viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:6,markerHeight:6,orient:"auto"},d);
+  el("path",{d:"M0 0L10 5L0 10z",fill:col},m);
+  el("line",{x1,y1,x2,y2,stroke:col,"stroke-width":2,"marker-end":`url(#${id})`},svg);
+}
+
+/* slide 6: demand shift */
+(function(){
+  const s=document.getElementById("shiftSvg");
+  axes(s,50,260,320,230,"Q of programmers","W");
+  line(s,80,50,300,250,C.teal,"D₁ = MRP₁");
+  line(s,140,50,332,225,C.orange,"D₂ = MRP₂",null,150,42);
+  arrow(s,200,150,240,150,C.orange);
+  el("text",{x:208,y:138,"font-size":12,"text-anchor":"middle",fill:C.orange},s,"MP ↑");
+})();
+
+/* slide 7: product market */
+(function(){
+  const s=document.getElementById("prodSvg");
+  axes(s,50,260,320,230,"Q of software","P");
+  line(s,70,50,320,240,C.blue,"D",null,322,236);
+  line(s,70,230,300,60,C.teal,"S₁",null,302,58);
+  line(s,150,230,370,68,C.orange,"S₂",null,350,64);
+  // intersections
+  function inter(a1,b1,a2,b2){} // computed by hand below
+  // D: y=50+ (x-70)*0.76 ; S1: y=230-(x-70)*0.739 ; S2: y=230-(x-150)*0.736
+  const dY=x=>50+(x-70)*0.76, s1=x=>230-(x-70)*0.7391, s2=x=>230-(x-150)*0.7364;
+  const x1=70+180/(0.76+0.7391), x2=(230+150*0.7364-50+70*0.76)/(0.76+0.7364);
+  dashTo(s,x1,dY(x1),50,260,"Q₁","P₁");
+  dashTo(s,x2,dY(x2),50,260,"Q₂","P₂");
+  arrow(s,239,120,279,120,C.orange);
+  el("text",{x:264,y:108,"font-size":12,"text-anchor":"middle",fill:C.orange},s,"cost ↓");
+})();
+
+/* ---------- slide 8: software + labor market sim ---------- */
+const gS=document.getElementById("gSlide"),eS=document.getElementById("eSlide");
+document.querySelectorAll("#eSeg button").forEach(b=>b.onclick=()=>{eS.value=b.dataset.e;sim();});
+function arrowId(svg,col){const id="m"+Math.random().toString(36).slice(2,7);const d=el("defs",{},svg);const m=el("marker",{id,viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:6,markerHeight:6,orient:"auto"},d);el("path",{d:"M0 0L10 5L0 10z",fill:col},m);return `url(#${id})`;}
+function sim(){
+  const g=+gS.value/100,e=+eS.value;
+  document.getElementById("gOut").textContent="+"+Math.round(g*100)+"%";
+  document.getElementById("eOut").textContent=e.toFixed(1);
+  document.querySelectorAll("#eSeg button").forEach(b=>{
+    const be=+b.dataset.e;const on=(be<1&&e<0.95)||(be===1&&e>=0.95&&e<=1.05)||(be>1&&e>1.05);b.classList.toggle("on",on);});
+  const P1=1/(1+g), Q1=Math.pow(1+g,e);         // software market
+  const k=Q1/(1+g);                              // programmers wanted at the old wage
+  const L0=140/(0.9+0.5),W0=40+0.5*L0;           // labor: D W=180-0.9L/k, S W=40+0.5L
+  const L1=140/(0.9/k+0.5),W1=40+0.5*L1;
+  const cl=v=>v>0.005?"up":v<-0.005?"down":"";
+  const show=(id,v)=>document.getElementById(id).innerHTML=`<span class="${cl(v)}">${pct(v)}</span>`;
+  show("rP",P1-1);show("rQ",Q1-1);show("rW",W1/W0-1);show("rL",L1/L0-1);
+  drawSoft(g,e,P1,Q1);
+  drawLab(k,L0,W0,L1,W1);
+  const msg=document.getElementById("simMsg");
+  if(g===0){msg.innerHTML="Move the productivity slider to see what happens.";return;}
+  const kind=e>1.05?"<span class='up'>Elastic</span>":e<0.95?"<span class='down'>Inelastic</span>":"Unit elastic";
+  const cmp=e>1.05?"<strong>faster</strong> than":e<0.95?"<strong>slower</strong> than":"exactly as fast as";
+  const shift=k>1.005?"shifts <strong>right</strong>":k<0.995?"shifts <strong>left</strong>":"does not shift";
+  msg.innerHTML=`<strong>${kind}:</strong> a ${Math.round(100-P1*100)}% price cut raises quantity demanded by <strong>${pct(Q1-1)}</strong>, which is ${cmp} the <strong>${pct(g)}</strong> productivity gain. `+
+    `So at the old wage, firms want <strong>${pct(k-1)}</strong> programmers (output ÷ productivity), and D<sub>L</sub> ${shift}. `+
+    (Math.abs(k-1)>0.005?`The wage then ${W1>W0?"rises":"falls"} ${pct(W1/W0-1).replace(/^[+-]/,"")}, so employment settles at <strong>${pct(L1/L0-1)}</strong>.`:"");
+}
+function drawSoft(g,e,P1,Q1){
+  const s=document.getElementById("softSvg");s.innerHTML="";
+  const x0=55,y0=210,w=375,h=180,QM=4,PM=1.5,X=q=>x0+q/QM*w,Y=p=>y0-p/PM*h;
+  const d=el("defs",{},s);const cp=el("clipPath",{id:"clipS"},d);el("rect",{x:x0,y:y0-h,width:w,height:h},cp);
+  axes(s,x0,y0,w,h,"Q of software","P");
+  const gr=el("g",{"clip-path":"url(#clipS)"},s);
+  // demand: Q = P^-e
+  let pts=[];for(let p=PM;p>=0.02;p-=0.005)pts.push(X(Math.pow(p,-e)).toFixed(1)+","+Y(p).toFixed(1));
+  el("polyline",{points:pts.join(" "),fill:"none",stroke:C.blue,"stroke-width":2.6},gr);
+  el("text",{x:X(Math.pow(1.35,-e))+8,y:Y(1.35)+4,"font-size":14,"font-weight":600,fill:C.blue},s,"D");
+  // supply (constant cost)
+  el("line",{x1:x0,y1:Y(1),x2:x0+w,y2:Y(1),stroke:C.teal,"stroke-width":2.6},gr);
+  el("text",{x:x0+w,y:Y(1)-7,"font-size":13,"font-weight":600,fill:C.teal,"text-anchor":"end"},s,"S₁ (old cost)");
+  dashTo(s,X(1),Y(1),x0,y0,"Q₁","P₁");
+  if(g>0){
+    el("line",{x1:x0,y1:Y(P1),x2:x0+w,y2:Y(P1),stroke:C.orange,"stroke-width":2.6},gr);
+    const pd=Math.pow(3.5,-1/e);
+    el("text",{x:x0+w,y:pd<P1?Y(P1)-7:Y(P1)+17,"font-size":13,"font-weight":600,fill:C.orange,"text-anchor":"end"},s,"S₂ (new cost)");
+    const am=arrowId(s,C.orange);
+    if(Y(P1)-Y(1)>18) el("line",{x1:X(0.5),y1:Y(1)+3,x2:X(0.5),y2:Y(P1)-4,stroke:C.orange,"stroke-width":2,"marker-end":am},s);
+    const off=Q1>QM;const qx=off?x0+w:X(Q1);
+    el("line",{x1:x0,y1:Y(P1),x2:qx,y2:Y(P1),stroke:C.muted,"stroke-dasharray":"4 4"},s);
+    el("text",{x:x0-6,y:Y(P1)+5,"font-size":13,"text-anchor":"end"},s,"P₂");
+    if(!off){
+      el("line",{x1:qx,y1:Y(P1),x2:qx,y2:y0,stroke:C.muted,"stroke-dasharray":"4 4"},s);
+      el("text",{x:qx,y:y0+18,"font-size":13,"text-anchor":"middle"},s,"Q₂");
+      el("circle",{cx:qx,cy:Y(P1),r:5,fill:C.orange},s);
+    } else {
+      
+    }
+    // quantity bracket
+    if(Math.abs(Q1-1)>0.04){
+      const yb=y0-14,am2=arrowId(s,C.good);
+      el("line",{x1:X(1),y1:yb,x2:Math.min(qx,x0+w)-2,y2:yb,stroke:C.good,"stroke-width":2,"marker-end":am2},s);
+      const len=Math.min(qx,x0+w)-X(1), off=Q1>QM;
+      const long=len>112;
+      const t=off?"Quantity demanded ↑ to "+Q1.toFixed(1)+"× Q₁ (off chart)":long?"Quantity demanded":null;
+      if(t) el("text",{x:X(1)+4,y:yb-7,"font-size":11.5,"font-weight":600,fill:C.good},s,t);
+      else { const tx=el("text",{x:Math.min(qx,x0+w)+8,y:yb+4,"font-size":12,"font-weight":600,fill:C.good},s);
+        el("tspan",{},tx,"Q"); el("tspan",{"baseline-shift":"sub","font-size":9},tx,"d"); el("tspan",{},tx," ↑"); }
+    }
+  }
+  el("circle",{cx:X(1),cy:Y(1),r:5,fill:C.teal},s);
+}
+function drawLab(k,L0,W0,L1,W1){
+  const s=document.getElementById("labSvg");s.innerHTML="";
+  const x0=55,y0=210,w=375,h=180,X=L=>x0+L/220*w,Y=W=>y0-W/200*h;
+  const d=el("defs",{},s);const cp=el("clipPath",{id:"clipL"},d);el("rect",{x:x0,y:y0-h,width:w,height:h},cp);
+  axes(s,x0,y0,w,h,"Q of programmers","W");
+  const g=el("g",{"clip-path":"url(#clipL)"},s);
+  el("line",{x1:X(0),y1:Y(40),x2:X(220),y2:Y(150),stroke:C.blue,"stroke-width":2.6},g);
+  el("text",{x:X(212),y:Y(146)+18,"font-size":14,"font-weight":600,fill:C.blue,"text-anchor":"end"},s,"S");
+  el("line",{x1:X(0),y1:Y(180),x2:X(200),y2:Y(0),stroke:C.teal,"stroke-width":2.6},g);
+  el("text",{x:X(186),y:Y(4),"font-size":14,"font-weight":600,fill:C.teal,"text-anchor":"end"},s,"D₁");
+  const moved=Math.abs(k-1)>0.005;
+  if(moved){
+    el("line",{x1:X(0),y1:Y(180),x2:X(200*k),y2:Y(0),stroke:C.orange,"stroke-width":2.6},g);
+    const lw=k>1?30:12, lx=k*(180-lw)/0.9;
+    el("text",{x:X(Math.min(lx,214))+8,y:Y(lw)+4,"font-size":14,"font-weight":600,fill:C.orange},s,"D₂");
+    // shift arrow at the old wage
+    if(Math.abs(k-1)>0.06){
+      const am=arrowId(s,C.orange);
+      el("line",{x1:X(L0)+(k>1?7:-7),y1:Y(W0)+(k>1?13:-13),x2:X(Math.min(L0*k,214))+(k>1?-3:3),y2:Y(W0)+(k>1?13:-13),stroke:C.orange,"stroke-width":2,"marker-end":am},s);
+    }
+  }
+  dashTo(s,X(L0),Y(W0),x0,y0,"L₁","W₁");
+  el("circle",{cx:X(L0),cy:Y(W0),r:5,fill:C.teal},s);
+  if(moved){
+    const yGap=Math.abs(Y(W1)-Y(W0)),xGap=Math.abs(X(L1)-X(L0));
+    dashTo(s,X(L1),Y(W1),x0,y0,xGap>16?"L₂":null,yGap>12?"W₂":null);
+    el("circle",{cx:X(L1),cy:Y(W1),r:5,fill:C.orange},s);
+  }
+}
+gS.oninput=sim;eS.oninput=sim;sim();
+
+/* ---------- slide 10: BLS bars ---------- */
+(function(){
+  const s=document.getElementById("blsSvg");
+  const data=[["Software developers, QA & testers",15,C.teal],["All computer occupations",9,C.teal],["All occupations",3,C.muted],["Computer programmers",-6,C.orange]];
+  const zx=150,sc=15;
+  el("line",{x1:zx,y1:10,x2:zx,y2:235,stroke:C.ink},s);
+  data.forEach((d,i)=>{
+    const y=20+i*55,v=d[1];
+    const x=v>=0?zx:zx+v*sc, w=Math.abs(v)*sc;
+    el("rect",{x,y:y+16,width:w,height:24,rx:4,fill:d[2]},s);
+    el("text",{x:v>=0?zx+w+6:x-6,y:y+33,"font-size":14,"font-weight":600,"text-anchor":v>=0?"start":"end",fill:d[2]},s,(v>0?"+":"")+v+"%");
+    el("text",{x:v>=0?zx+6:zx+6,y:y+10,"font-size":12.5,fill:C.ink},s,d[0]);
+  });
+})();
+
+/* ---------- slide 11: timeline ---------- */
+const tlData=[
+  ["Machine code by hand","Programmers wrote instructions as numbers or short codes, one tiny step at a time. A simple calculation could take days to write and debug. Only a few thousand specialists in the world did this work."],
+  ["Compilers","FORTRAN (1957) let programmers write formulas in something close to math, and a compiler translated them into machine code. Programs took a fraction of the time to write. Some worried programmers would no longer be needed. Instead, computers became useful to far more organizations, and demand for programmers grew."],
+  ["Languages & personal computers","Languages like C and the arrival of PCs meant software was needed in every office, school, and home. Cheaper software meant far more people bought it, a sign of elastic demand."],
+  ["The web & open-source libraries","Developers could reuse millions of lines of free, shared code instead of writing everything from scratch, a huge jump in MP. The number of software jobs exploded as every business moved online."],
+  ["Cloud & app stores","Renting servers and distributing through app stores let a team of a few people reach millions of users. Software spread into phones, cars, and appliances."],
+  ["AI coding assistants","AI tools write, explain, and test code. BLS projects strong growth for software developers (+15%, 2024–34) but a decline for routine computer programmers (−6%). The tool complements one job and substitutes for the other."]
+];
+function tl(i){
+  document.querySelectorAll("#tl button").forEach((b,j)=>b.classList.toggle("on",j===i));
+  document.getElementById("tlCard").innerHTML=`<h3>${tlData[i][0]}</h3><p style="margin:0">${tlData[i][1]}</p><p class="src">MP of a programmer: ${"▲".repeat(i+1)}</p>`;
+}
+document.querySelectorAll("#tl button").forEach(b=>b.onclick=()=>tl(+b.dataset.i));tl(0);
+
+/* ---------- slide 12: FRQ graphs ---------- */
+const frqState={b:false,c:false};
+function drawFRQ(){
+  const s=document.getElementById("frqSvg");s.innerHTML="";
+  const lab=(x,y,t,col,anc)=>el("text",{x,y,"font-size":13,"font-weight":600,fill:col||C.ink,"text-anchor":anc||"start"},s,t);
+  const ax=(x0,y0,w,h,xl)=>{el("line",{x1:x0,y1:y0,x2:x0,y2:y0-h,stroke:C.ink,"stroke-width":2},s);el("line",{x1:x0,y1:y0,x2:x0+w,y2:y0,stroke:C.ink,"stroke-width":2},s);lab(x0,y0-h-8,"W",C.ink,"middle");lab(x0+w,y0+38,xl,C.ink,"end");};
+  const ln=(x1,y1,x2,y2,col)=>el("line",{x1,y1,x2,y2,stroke:col,"stroke-width":2.6},s);
+  const dash=(x,y,x0,y0,lx,ly)=>{el("line",{x1:x0,y1:y,x2:x,y2:y,stroke:C.muted,"stroke-dasharray":"4 4"},s);el("line",{x1:x,y1:y,x2:x,y2:y0,stroke:C.muted,"stroke-dasharray":"4 4"},s);if(lx)el("text",{x,y:y0+17,"font-size":12,"text-anchor":"middle"},s,lx);if(ly)el("text",{x:x0-5,y:y+4,"font-size":12,"text-anchor":"end"},s,ly);};
+  // MARKET
+  const x0=40,y0=220;
+  ax(x0,y0,190,190,"L");
+  lab(x0+95,16,"Market",C.ink,"middle");
+  const sd=150/140,ss=145/150;
+  ln(50,60,190,210,C.teal); lab(172,214,"D₁",C.teal,"end");
+  ln(50,200,200,55,C.blue); lab(205,55,"S",C.blue);
+  const t1=140/(sd+ss),p1={x:50+t1,y:60+t1*sd};
+  dash(p1.x,p1.y,x0,y0,"L₁","W₁");
+  if(frqState.c){
+    ln(85,60,215,199,C.orange); lab(219,200,"D₂",C.orange);
+    const t2=(140+35*sd)/(sd+ss),p2={x:50+t2,y:200-t2*ss};
+    dash(p2.x,p2.y,x0,y0,"L₂","W₂");
+    el("circle",{cx:p2.x,cy:p2.y,r:4,fill:C.orange},s);
+  }
+  el("circle",{cx:p1.x,cy:p1.y,r:4,fill:C.teal},s);
+  // FIRM
+  const fx=285,fy=220,Wy=p1.y;
+  ax(fx,fy,180,190,"L (SoftCo)");
+  lab(fx+90,16,"SoftCo",C.ink,"middle");
+  ln(fx,Wy,fx+180,Wy,C.blue); lab(fx+6,Wy-7,"MRC = W₁",C.blue);
+  ln(fx+10,50,fx+140,193,C.teal); lab(fx+138,210,"MRP₁",C.teal,"end");
+  const q1=fx+10+(Wy-50)/1.1; dash(q1,Wy,fx,fy,"q₁",null);
+  if(frqState.b){
+    ln(fx+45,50,fx+165,182,C.orange); lab(fx+168,192,"MRP₂",C.orange);
+    const q2=fx+45+(Wy-50)/1.1; dash(q2,Wy,fx,fy,"q₂",null);
+  }
+}
+document.querySelectorAll("[data-rev]").forEach(b=>b.onclick=()=>{
+  const id=b.dataset.rev;document.getElementById(id).classList.add("show");b.style.display="none";
+  if(id==="fb")frqState.b=true; if(id==="fc")frqState.c=true; drawFRQ();
+});
+drawFRQ();
+
+/* ---------- slide 13: quiz ---------- */
+const quiz=[
+  {q:"For a firm selling in a perfectly competitive product market, the marginal revenue product of labor equals:",o:["MP ÷ P","MP × P","TP × P","W × L"],a:1,ex:"MRP = MP × P. It's the extra output from one more worker times the price that output sells for."},
+  {q:"An AI tool raises the marginal product of every programmer, and the price of software does not change. The demand for programmers will:",o:["Shift left","Shift right","Not shift; there's a movement along the curve","Become perfectly elastic"],a:1,ex:"Higher MP raises MRP at every quantity of labor, so the labor demand (MRP) curve shifts right."},
+  {q:"A firm hiring in a perfectly competitive labor market maximizes profit by hiring until:",o:["MRP = MRC = W","MP = W","MRP is at its maximum","TP is at its maximum"],a:0,ex:"Hire until MRP = MRC. For a wage-taker, MRC equals the market wage."},
+  {q:"Productivity in software rises 50% and the price of software falls. If demand for software is highly price INELASTIC, employment of programmers will most likely:",o:["Rise by more than 50%","Rise by exactly 50%","Fall","Be unaffected"],a:2,ex:"With inelastic demand, output rises by less than 50%, so fewer programmers are needed to produce it."},
+  {q:"If AI tools and software developers are complements in production, a fall in the price of AI tools will:",o:["Decrease demand for developers","Increase demand for developers","Decrease the supply of developers","Have no effect on developers"],a:1,ex:"Cheaper complementary inputs get used more, which raises developers' MP and therefore their labor demand."}
+];
+let qi=0,score=0,answered=0;
+function renderQ(){
+  const box=document.getElementById("quizBox");
+  if(qi>=quiz.length){
+    box.innerHTML=`<h3>Done!</h3><p>You scored ${score} out of ${quiz.length}.</p><button class="btn" id="qRetry">Try again</button>`;
+    document.getElementById("qRetry").onclick=()=>{qi=0;score=0;answered=0;document.getElementById("qScore").textContent="0 / 0";renderQ();};
+    return;
+  }
+  const Q=quiz[qi];
+  box.innerHTML=`<p class="qnum">Question ${qi+1} of ${quiz.length}</p><p style="font-weight:500">${Q.q}</p>`+
+    Q.o.map((o,i)=>`<button class="opt" data-i="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join("")+
+    `<div class="feedback" id="qFb"></div><button class="btn" id="qNext" style="display:none;margin-top:.6rem">Next →</button>`;
+  box.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,ok=i===Q.a;
+    box.querySelectorAll(".opt").forEach((x,j)=>{x.disabled=true;if(j===Q.a)x.classList.add("right");});
+    if(!ok)b.classList.add("wrong");
+    if(ok)score++;answered++;
+    const fb=document.getElementById("qFb");fb.className="feedback show "+(ok?"ok":"no");
+    fb.innerHTML=(ok?"<strong>Correct.</strong> ":"<strong>Not quite.</strong> ")+Q.ex;
+    document.getElementById("qScore").textContent=score+" / "+answered;
+    const n=document.getElementById("qNext");n.style.display="inline-block";n.onclick=()=>{qi++;renderQ();};
+  });
+}
+renderQ();
+
+fromHash();
+})();
+</script>
+</body>
+</html>
